@@ -1,0 +1,12 @@
+model Message {
+  id Int @id @default(autoincrement())
+
+  content   String
+  createdAt DateTime @default(now())
+
+  fromUser   User @relation("SentMessages", fields: [fromUserId], references: [id], onDelete: Cascade)
+  fromUserId Int
+
+  toUser   User? @relation("ReceivedDirectMessages", fields: [toUserId], references: [id], onDelete: Cascade)
+  toUserId Int?
+}
