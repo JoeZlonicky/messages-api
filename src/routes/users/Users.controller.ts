@@ -67,7 +67,6 @@ const create = [
 const update = [
   ...UsersValidator.update,
   expressAsyncHandler(async (req: Request, res: Response) => {
-    console.log('Match');
     const { displayName } = req.body as {
       displayName?: string;
     };

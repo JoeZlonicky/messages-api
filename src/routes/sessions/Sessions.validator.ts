@@ -1,3 +1,4 @@
+import { authRoute } from '../../middleware/authRoute';
 import { validateRequest } from '../../middleware/validateRequest';
 import { prisma } from '../../prisma/prisma';
 import type { User } from '@prisma/client';
@@ -32,4 +33,6 @@ const create = [
   validateRequest,
 ];
 
-export const SessionsValidator = { create };
+const remove = [authRoute];
+
+export const SessionsValidator = { create, remove };

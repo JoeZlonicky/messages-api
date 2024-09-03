@@ -1,11 +1,12 @@
 import { SessionsValidator } from './Sessions.validator';
 import type { User } from '@prisma/client';
 import type { NextFunction, Request, Response } from 'express';
+import expressAsyncHandler from 'express-async-handler';
 
 const create = [
   ...SessionsValidator.create,
-  (req: Request, res: Response, next: NextFunction) => {
-    req.session.regenerate((err?: Error) => {
+  expressAsyncHandler((req: Request, res: Response, next: NextFunction) => {
+    req.session.regenerate((err) => {
       if (err) {
         return next(err);
       }
@@ -13,14 +14,33 @@ const create = [
       const user = req.user as User;
       req.session.userId = user.id;
 
-      req.session.save((err?: Error) => {
+      req.session.save((err) => {
         if (err) {
           return next(err);
         }
         res.json({ id: user.id, displayName: user.displayName });
       });
     });
-  },
+  }),
 ];
 
-export const SessionsController = { create };
+const remove = [
+  ...SessionsValidator.remove,
+  expressAsyncHandler((req: Request, res: Response, next: NextFunction) => {
+    req.session.userId = undefined;
+    req.session.save((err) => {
+      if (err) {
+        return next(err);
+      }
+
+      req.session.regenerate((err) => {
+        if (err) {
+          return next(err);
+        }
+        res.send();
+      });
+    });
+  }),
+];
+
+export const SessionsController = { create, remove };
