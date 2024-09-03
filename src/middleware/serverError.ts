@@ -8,8 +8,7 @@ function serverError(
   _next: NextFunction,
 ) {
   console.error(err.stack);
-  res.type('txt');
-  res.status(500).send('500 Internal Server Error');
+  res.type('txt').status(500).send('500 Internal Server Error');
 }
 
 export { serverError };

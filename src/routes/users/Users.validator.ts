@@ -1,6 +1,12 @@
+import { authRoute } from '../../middleware/authRoute';
 import { validateRequest } from '../../middleware/validateRequest';
 import { prisma } from '../../prisma/prisma';
-import { body } from 'express-validator';
+import type { Request } from 'express';
+import { body, param } from 'express-validator';
+
+const get = [authRoute];
+
+const getById = [authRoute];
 
 const create = [
   body('username')
@@ -37,6 +43,19 @@ const create = [
   validateRequest,
 ];
 
-const update = [body('displayName').trim().optional(), validateRequest];
+const update = [
+  authRoute,
+  param('id')
+    .custom((value, { req }) => {
+      return parseInt(value as string) === (req as Request).user!.id;
+    })
+    .withMessage('id does not match authenticated user')
+    .bail({ level: 'request' }),
+  body('displayName')
+    .trim()
+    .isLength({ min: 1 })
+    .withMessage('displayName missing'),
+  validateRequest,
+];
 
-export const UsersValidator = { create, update };
+export const UsersValidator = { get, getById, create, update };

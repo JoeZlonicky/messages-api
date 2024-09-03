@@ -4,35 +4,41 @@ import { UsersValidator } from './Users.validator';
 import type { NextFunction, Request, Response } from 'express';
 import expressAsyncHandler from 'express-async-handler';
 
-const get = expressAsyncHandler(async (_req: Request, res: Response) => {
-  const result = await prisma.user.findMany({
-    select: {
-      id: true,
-      displayName: true,
-    },
-  });
-  res.json(result);
-});
-
-const getById = expressAsyncHandler(
-  async (req: Request, res: Response, next: NextFunction) => {
-    const id = parseInt(req.params.id!);
+const get = [
+  ...UsersValidator.get,
+  expressAsyncHandler(async (_req: Request, res: Response) => {
     const result = await prisma.user.findMany({
       select: {
         id: true,
         displayName: true,
       },
-      where: { id },
     });
-    if (!result) {
-      return next();
-    }
     res.json(result);
-  },
-);
+  }),
+];
+
+const getById = [
+  ...UsersValidator.getById,
+  expressAsyncHandler(
+    async (req: Request, res: Response, next: NextFunction) => {
+      const id = parseInt(req.params.id!);
+      const result = await prisma.user.findMany({
+        select: {
+          id: true,
+          displayName: true,
+        },
+        where: { id },
+      });
+      if (!result) {
+        return next();
+      }
+      res.json(result);
+    },
+  ),
+];
 
 const create = [
-  UsersValidator.create,
+  ...UsersValidator.create,
   expressAsyncHandler(async (req: Request, res: Response) => {
     const { username, displayName, password } = req.body as {
       username: string;
@@ -59,27 +65,29 @@ const create = [
 ];
 
 const update = [
-  UsersValidator.update,
+  ...UsersValidator.update,
   expressAsyncHandler(async (req: Request, res: Response) => {
+    console.log('Match');
     const { displayName } = req.body as {
       displayName?: string;
     };
 
     if (!displayName) return;
 
-    // TODO: Implement once auth is done
-    await prisma.user.update({
+    const result = await prisma.user.update({
+      select: {
+        id: true,
+        displayName: true,
+      },
       data: {
         displayName,
       },
       where: {
-        username: 'test',
+        id: req.user!.id,
       },
     });
 
-    //res.json(result);
-    res.type('text');
-    res.status(501).send('Not implemented');
+    res.json(result);
   }),
 ];
 
