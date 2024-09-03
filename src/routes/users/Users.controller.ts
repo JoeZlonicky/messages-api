@@ -1,5 +1,5 @@
+import { hashPassword } from '../../auth/hashPassword';
 import { prisma } from '../../prisma/prisma';
-import { hashPassword } from '../../utility/hashPassword';
 import { UsersValidator } from './Users.validator';
 import type { NextFunction, Request, Response } from 'express';
 import expressAsyncHandler from 'express-async-handler';

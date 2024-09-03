@@ -9,7 +9,6 @@ function validateRequest(req: Request, res: Response, next: NextFunction) {
   }
 
   const messages = errors.array().map((error) => {
-    console.log(error);
     if (typeof error.msg === 'string') {
       return error.msg;
     } else {

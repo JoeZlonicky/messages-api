@@ -1,5 +1,5 @@
+import { hashPassword } from '../auth/hashPassword';
 import { prisma } from '../prisma/prisma';
-import { hashPassword } from '../utility/hashPassword';
 
 async function seed() {
   await prisma.user.upsert({
