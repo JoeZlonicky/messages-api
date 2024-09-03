@@ -1,0 +1,33 @@
+{
+  "name": "messages-api",
+  "version": "0.1.0",
+  "license": "ISC",
+  "private": "true",
+  "type": "module",
+  "scripts": {
+    "start": "tsx src/app.ts",
+    "watch": "tsx --watch src/app.ts",
+    "type-check": "tsc --noEmit",
+    "lint": "eslint . --fix",
+    "format": "prettier src --write"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "express-async-handler": "^1.2.0",
+    "express-validator": "^7.2.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.9.1",
+    "@trivago/prettier-plugin-sort-imports": "^4.3.0",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "@types/node": "^22.5.2",
+    "eslint": "^9.9.1",
+    "eslint-config-prettier": "^9.1.0",
+    "prettier": "^3.3.3",
+    "tsx": "^4.19.0",
+    "typescript-eslint": "^8.4.0"
+  }
+}
