@@ -1,6 +1,6 @@
 import type { Request, Response } from 'express';
 
-function get(req: Request, res: Response) {
+function get(_req: Request, res: Response) {
   res.json({ Hello: 'World' });
 }
 
