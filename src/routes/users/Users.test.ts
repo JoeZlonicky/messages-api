@@ -1,8 +1,8 @@
 import { app } from '../../app';
-import { alice } from '../../config/seedConfig';
+import { alice } from '../../data/seedData';
 import { prisma } from '../../prisma/prisma';
 import type { ExposedUser } from '../../types/ExposedUser';
-import { authenticatedAgent } from '../../utility/testing/authenticatedAgent';
+import { useTestSession } from '../../utility/testing/useTestSession';
 import { beforeAll, describe, expect, test } from '@jest/globals';
 import type { User } from '@prisma/client';
 import request from 'supertest';
@@ -53,7 +53,7 @@ describe('authenticated requests', () => {
   let exposedUser: ExposedUser;
 
   beforeAll(async () => {
-    [agent, exposedUser] = await authenticatedAgent(alice);
+    [agent, exposedUser] = await useTestSession(alice);
   });
 
   test('get users', (done) => {

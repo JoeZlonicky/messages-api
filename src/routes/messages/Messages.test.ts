@@ -1,7 +1,9 @@
 import { app } from '../../app';
-import { alice, messages } from '../../config/seedConfig';
-import { authenticatedAgent } from '../../utility/testing/authenticatedAgent';
+import { alice, messageContents } from '../../data/seedData';
+import { useTestMessages } from '../../utility/testing/useTestMessages';
+import { useTestSession } from '../../utility/testing/useTestSession';
 import { beforeAll, describe, expect, test } from '@jest/globals';
+import type { Message, User } from '@prisma/client';
 import request from 'supertest';
 import type TestAgent from 'supertest/lib/agent';
 
@@ -11,9 +13,21 @@ test('401 without authentication', (done) => {
 
 describe('authenticated requests', function () {
   let agent: TestAgent;
+  let user: User;
+  let messages: Message[];
 
   beforeAll(async () => {
-    [agent] = await authenticatedAgent(alice);
+    [agent, user] = await useTestSession(alice);
+    messages = await useTestMessages([
+      {
+        content: messageContents.aliceToCaitlin,
+        fromUser: {
+          connect: {
+            id: user.id,
+          },
+        },
+      },
+    ]);
   });
 
   test('gets messages', (done) => {
@@ -21,14 +35,7 @@ describe('authenticated requests', function () {
       .get('/messages')
       .expect('Content-Type', /json/)
       .expect((res) => {
-        expect(res.body).toHaveLength(
-          [
-            messages.aliceToCaitlin,
-            messages.aliceToServer,
-            messages.bobToServer,
-            messages.caitlinToAlice,
-          ].length,
-        );
+        expect(res.body).toHaveLength(messages.length);
       })
       .expect(200, done);
   });

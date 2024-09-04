@@ -1,8 +1,8 @@
 import { app } from '../../app';
-import { alice } from '../../config/seedConfig';
-import type { ExposedUser } from '../../types/ExposedUser';
-import { authenticatedAgent } from '../../utility/testing/authenticatedAgent';
+import { alice } from '../../data/seedData';
+import { useTestSession } from '../../utility/testing/useTestSession';
 import { beforeAll, describe, expect, test } from '@jest/globals';
+import type { User } from '@prisma/client';
 import request from 'supertest';
 import type TestAgent from 'supertest/lib/agent';
 
@@ -27,14 +27,14 @@ describe('validation', function () {
 
 describe('log in process', () => {
   let agent: TestAgent;
-  let exposedUser: ExposedUser;
+  let user: User;
 
   beforeAll(async () => {
-    [agent, exposedUser] = await authenticatedAgent(alice);
+    [agent, user] = await useTestSession(alice);
   });
 
   test('log in success', (done) => {
-    expect(exposedUser).toHaveProperty('displayName', alice.displayName);
+    expect(user).toHaveProperty('displayName', alice.displayName);
     done();
   });
 
@@ -42,7 +42,9 @@ describe('log in process', () => {
     agent
       .get('/sessions')
       .expect('Content-Type', /json/)
-      .expect(exposedUser)
+      .expect((res) => {
+        expect(res.body).toHaveProperty('displayName', alice.displayName);
+      })
       .expect(200, done);
   });
 

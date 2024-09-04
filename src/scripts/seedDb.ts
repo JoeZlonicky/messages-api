@@ -1,5 +1,5 @@
 import { hashPassword } from '../auth/hashPassword';
-import { alice, bob, caitlin, messages } from '../config/seedConfig.js';
+import { alice, bob, caitlin, messageContents } from '../data/seedData.js';
 import { prisma } from '../prisma/prisma';
 import type { Prisma, User } from '@prisma/client';
 
@@ -45,19 +45,27 @@ async function seed() {
   const bobUser = await upsertUser(bob);
   const caitlinUser = await upsertUser(caitlin);
 
-  await createMessageIfDoesntExist(messages.aliceToServer, aliceUser, null);
-  await createMessageIfDoesntExist(messages.bobToServer, bobUser, null);
   await createMessageIfDoesntExist(
-    messages.aliceToCaitlin,
+    messageContents.aliceToServer,
+    aliceUser,
+    null,
+  );
+  await createMessageIfDoesntExist(messageContents.bobToServer, bobUser, null);
+  await createMessageIfDoesntExist(
+    messageContents.aliceToCaitlin,
     aliceUser,
     caitlinUser,
   );
   await createMessageIfDoesntExist(
-    messages.caitlinToAlice,
+    messageContents.caitlinToAlice,
     caitlinUser,
     aliceUser,
   );
-  await createMessageIfDoesntExist(messages.caitlinToBob, caitlinUser, bobUser);
+  await createMessageIfDoesntExist(
+    messageContents.caitlinToBob,
+    caitlinUser,
+    bobUser,
+  );
 
   console.log('Done!');
 }

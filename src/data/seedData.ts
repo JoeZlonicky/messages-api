@@ -18,7 +18,7 @@ const caitlin: Prisma.UserCreateInput = {
   displayName: 'Caitlin',
 };
 
-const messages = {
+const messageContents = {
   aliceToServer: 'Hi, server!',
   bobToServer: 'Glad to be here!',
   aliceToCaitlin: 'Hi, Caitlin',
@@ -26,4 +26,4 @@ const messages = {
   caitlinToBob: 'Hi, Bob!',
 };
 
-export { alice, bob, caitlin, messages };
+export { alice, bob, caitlin, messageContents };

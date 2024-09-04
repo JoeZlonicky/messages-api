@@ -16,7 +16,6 @@
     "reset-db": "dotenvx run -f .env.local -- prisma migrate reset",
     "test": "dotenvx run -f .env.test -- jest",
     "test:migrate-db": "dotenvx run -f .env.test -- prisma migrate dev",
-    "test:seed-db": "dotenvx run -f .env.test -- tsx src/scripts/seedDb.ts",
     "test:reset-db": "dotenvx run -f .env.test -- prisma migrate reset",
     "type-check": "tsc --noEmit",
     "lint": "eslint . --fix",
