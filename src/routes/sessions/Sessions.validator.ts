@@ -5,6 +5,8 @@ import type { User } from '@prisma/client';
 import bcrypt from 'bcryptjs';
 import { body } from 'express-validator';
 
+const get = [authRoute];
+
 const create = [
   body('username')
     .trim()
@@ -35,4 +37,4 @@ const create = [
 
 const remove = [authRoute];
 
-export const SessionsValidator = { create, remove };
+export const SessionsValidator = { get, create, remove };

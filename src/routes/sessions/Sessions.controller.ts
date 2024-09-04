@@ -3,6 +3,13 @@ import type { User } from '@prisma/client';
 import type { NextFunction, Request, Response } from 'express';
 import expressAsyncHandler from 'express-async-handler';
 
+const get = [
+  ...SessionsValidator.get,
+  expressAsyncHandler((req: Request, res: Response) => {
+    res.json({ id: req.user!.id, displayName: req.user!.displayName });
+  }),
+];
+
 const create = [
   ...SessionsValidator.create,
   expressAsyncHandler((req: Request, res: Response, next: NextFunction) => {
@@ -43,4 +50,4 @@ const remove = [
   }),
 ];
 
-export const SessionsController = { create, remove };
+export const SessionsController = { get, create, remove };
