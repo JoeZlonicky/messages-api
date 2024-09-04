@@ -2,17 +2,25 @@ import RedisStore from 'connect-redis';
 import session from 'express-session';
 import { createClient } from 'redis';
 
-const redisClient = createClient();
-redisClient.connect().catch(console.error);
+const redisStore = () => {
+  if (process.env.TEST_ENV === 'true') {
+    return undefined;
+  }
 
-const redisStore = new RedisStore({
-  client: redisClient,
-  prefix: 'messages:',
-});
+  const redisClient = createClient();
+  redisClient.connect().catch(console.error);
+
+  new RedisStore({
+    client: redisClient,
+    prefix: process.env.REDIS_PREFIX
+      ? process.env.REDIS_PREFIX + ':'
+      : undefined,
+  });
+};
 
 const authSession = () =>
   session({
-    store: redisStore,
+    store: redisStore(),
     resave: false,
     saveUninitialized: false,
     secret: process.env.AUTH_SECRET,

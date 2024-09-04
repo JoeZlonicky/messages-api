@@ -20,7 +20,4 @@ app.use(IndexRouter);
 app.use(pageNotFound);
 app.use(serverError);
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Server open on http://localhost:${PORT}`);
-});
+export { app };
