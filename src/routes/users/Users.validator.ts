@@ -40,19 +40,19 @@ const create = [
       return (req.body as { password: string }).password === value;
     })
     .withMessage('passwords do not match'),
-  body('serverSecret')
+  body('signUpSecret')
     .trim()
     .custom((value) => {
       if (
-        !process.env.SERVER_SECRET ||
-        process.env.SERVER_SECRET.length === 0
+        !process.env.SIGN_UP_SECRET ||
+        process.env.SIGN_UP_SECRET.length === 0
       ) {
         return true;
       }
 
-      return process.env.SERVER_SECRET === value;
+      return process.env.SIGN_UP_SECRET === value;
     })
-    .withMessage('serverSecret is incorrect'),
+    .withMessage('signUpSecret is incorrect'),
   validateRequest,
 ];
 

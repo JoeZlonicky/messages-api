@@ -4,7 +4,8 @@ declare global {
       PORT: string;
       DATABASE_URI: string;
       AUTH_SECRET: string;
-      SERVER_SECRET: string;
+      AUTH_SECURE: string;
+      SIGN_UP_SECRET: string;
     }
   }
 }
