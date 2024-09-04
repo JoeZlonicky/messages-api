@@ -44,7 +44,7 @@ const remove = [
         if (err) {
           return next(err);
         }
-        res.send();
+        res.send('200');
       });
     });
   }),
