@@ -6,7 +6,7 @@ const UsersRouter = Router();
 UsersRouter.get('/:id(\\d+)', UsersController.getById);
 UsersRouter.patch('/:id(\\d+)', UsersController.update);
 
-UsersRouter.get('/', UsersController.get);
+UsersRouter.get('/', UsersController.getAll);
 UsersRouter.post('/', UsersController.create);
 
 export { UsersRouter };

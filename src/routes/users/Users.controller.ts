@@ -4,7 +4,7 @@ import { UsersValidator } from './Users.validator';
 import type { NextFunction, Request, Response } from 'express';
 import expressAsyncHandler from 'express-async-handler';
 
-const get = [
+const getAll = [
   ...UsersValidator.get,
   expressAsyncHandler(async (_req: Request, res: Response) => {
     const result = await prisma.user.findMany({
@@ -90,4 +90,4 @@ const update = [
   }),
 ];
 
-export const UsersController = { get, getById, create, update };
+export const UsersController = { getAll, getById, create, update };

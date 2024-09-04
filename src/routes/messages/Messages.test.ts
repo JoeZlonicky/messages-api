@@ -11,8 +11,9 @@ test('401 without authentication', (done) => {
 
 describe('authenticated requests', function () {
   let agent: TestAgent;
-  beforeAll((done) => {
-    agent = authenticatedAgent(alice, done);
+
+  beforeAll(async () => {
+    [agent] = await authenticatedAgent(alice);
   });
 
   test('gets messages', (done) => {

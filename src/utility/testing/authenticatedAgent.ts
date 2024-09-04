@@ -1,15 +1,21 @@
 import { app } from '../../app';
+import type { SessionData } from '../../types/SessionData';
 import type { User } from '@prisma/client';
 import request from 'supertest';
+import type TestAgent from 'supertest/lib/agent';
 
-function authenticatedAgent(user: User, cb: () => void) {
+// Creates a test agent with a session
+async function authenticatedAgent(
+  user: User,
+): Promise<[TestAgent, SessionData]> {
   const agent = request.agent(app);
-  agent
+  const result = await agent
     .post('/sessions')
-    .send(`username=${user.username}&password=${user.password}`)
-    .end(cb);
+    .send(`username=${user.username}&password=${user.password}`);
 
-  return agent;
+  const sessionData = result.body as SessionData;
+
+  return [agent, sessionData];
 }
 
 export { authenticatedAgent };

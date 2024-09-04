@@ -6,10 +6,9 @@ async function seed() {
   console.log('Seeding database...');
 
   await prisma.user.upsert({
-    where: { id: alice.id },
+    where: { username: alice.username },
     update: {},
     create: {
-      id: alice.id,
       username: alice.username,
       password: await hashPassword(alice.password),
       displayName: alice.displayName,
@@ -17,10 +16,9 @@ async function seed() {
   });
 
   await prisma.user.upsert({
-    where: { id: bob.id },
+    where: { username: bob.username },
     update: {},
     create: {
-      id: bob.id,
       username: bob.username,
       password: await hashPassword(bob.password),
       displayName: bob.displayName,
