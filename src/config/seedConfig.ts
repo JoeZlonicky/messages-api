@@ -1,17 +1,29 @@
-import type { User } from '@prisma/client';
+import type { Prisma } from '@prisma/client';
 
-const alice: User = {
-  id: -1, // Will get set automatically by database
+const alice: Prisma.UserCreateInput = {
   username: 'alice123',
   password: '12345678',
   displayName: 'Alice',
 };
 
-const bob: User = {
-  id: -1, // Will get set automatically by database
+const bob: Prisma.UserCreateInput = {
   username: 'bob123',
   password: '12345678',
   displayName: 'Bob',
 };
 
-export { alice, bob };
+const caitlin: Prisma.UserCreateInput = {
+  username: 'caitlin123',
+  password: '12345678',
+  displayName: 'Caitlin',
+};
+
+const messages = {
+  aliceToServer: 'Hi, server!',
+  bobToServer: 'Glad to be here!',
+  aliceToCaitlin: 'Hi, Caitlin',
+  caitlinToAlice: 'Hey!',
+  caitlinToBob: 'Hi, Bob!',
+};
+
+export { alice, bob, caitlin, messages };

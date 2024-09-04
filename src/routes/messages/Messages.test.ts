@@ -1,7 +1,7 @@
 import { app } from '../../app';
-import { alice } from '../../config/seedConfig';
+import { alice, messages } from '../../config/seedConfig';
 import { authenticatedAgent } from '../../utility/testing/authenticatedAgent';
-import { beforeAll, describe, test } from '@jest/globals';
+import { beforeAll, describe, expect, test } from '@jest/globals';
 import request from 'supertest';
 import type TestAgent from 'supertest/lib/agent';
 
@@ -17,7 +17,20 @@ describe('authenticated requests', function () {
   });
 
   test('gets messages', (done) => {
-    agent.get('/messages').expect(200, done);
+    agent
+      .get('/messages')
+      .expect('Content-Type', /json/)
+      .expect((res) => {
+        expect(res.body).toHaveLength(
+          [
+            messages.aliceToCaitlin,
+            messages.aliceToServer,
+            messages.bobToServer,
+            messages.caitlinToAlice,
+          ].length,
+        );
+      })
+      .expect(200, done);
   });
 
   test('404 on unknown message', (done) => {

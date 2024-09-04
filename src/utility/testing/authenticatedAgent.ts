@@ -1,12 +1,12 @@
 import { app } from '../../app';
 import type { ExposedUser } from '../../types/ExposedUser';
-import type { User } from '@prisma/client';
+import type { Prisma } from '@prisma/client';
 import request from 'supertest';
 import type TestAgent from 'supertest/lib/agent';
 
 // Creates a test agent with a session
 async function authenticatedAgent(
-  user: User,
+  user: Prisma.UserCreateInput,
 ): Promise<[TestAgent, ExposedUser]> {
   const agent = request.agent(app);
   const result = await agent
