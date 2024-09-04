@@ -1,7 +1,7 @@
 import { app } from '../../app';
 import { alice } from '../../config/seedConfig';
 import { prisma } from '../../prisma/prisma';
-import type { SessionData } from '../../types/SessionData';
+import type { ExposedUser } from '../../types/ExposedUser';
 import { authenticatedAgent } from '../../utility/testing/authenticatedAgent';
 import { beforeAll, describe, expect, test } from '@jest/globals';
 import type { User } from '@prisma/client';
@@ -50,10 +50,10 @@ test('sign up success', async () => {
 
 describe('authenticated requests', () => {
   let agent: TestAgent;
-  let sessionData: SessionData;
+  let exposedUser: ExposedUser;
 
   beforeAll(async () => {
-    [agent, sessionData] = await authenticatedAgent(alice);
+    [agent, exposedUser] = await authenticatedAgent(alice);
   });
 
   test('get users', (done) => {
@@ -61,7 +61,7 @@ describe('authenticated requests', () => {
   });
 
   test('get user by id', (done) => {
-    agent.get(`/users/${sessionData.id}`).expect(200, done);
+    agent.get(`/users/${exposedUser.id}`).expect(200, done);
   });
 });
 

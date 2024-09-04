@@ -1,5 +1,6 @@
 import { hashPassword } from '../../auth/hashPassword';
 import { prisma } from '../../prisma/prisma';
+import type { ExposedUser } from '../../types/ExposedUser';
 import { UsersValidator } from './Users.validator';
 import type { NextFunction, Request, Response } from 'express';
 import expressAsyncHandler from 'express-async-handler';
@@ -22,7 +23,7 @@ const getById = [
   expressAsyncHandler(
     async (req: Request, res: Response, next: NextFunction) => {
       const id = parseInt(req.params.id!);
-      const result = await prisma.user.findMany({
+      const result: ExposedUser[] = await prisma.user.findMany({
         select: {
           id: true,
           displayName: true,
@@ -48,7 +49,7 @@ const create = [
 
     const hashedPassword = await hashPassword(password);
 
-    const result = await prisma.user.create({
+    const result: ExposedUser = await prisma.user.create({
       data: {
         username,
         displayName,
@@ -73,7 +74,7 @@ const update = [
 
     if (!displayName) return;
 
-    const result = await prisma.user.update({
+    const result: ExposedUser = await prisma.user.update({
       select: {
         id: true,
         displayName: true,

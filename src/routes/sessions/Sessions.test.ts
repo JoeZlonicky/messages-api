@@ -1,6 +1,6 @@
 import { app } from '../../app';
 import { alice } from '../../config/seedConfig';
-import type { SessionData } from '../../types/SessionData';
+import type { ExposedUser } from '../../types/ExposedUser';
 import { authenticatedAgent } from '../../utility/testing/authenticatedAgent';
 import { beforeAll, describe, expect, test } from '@jest/globals';
 import request from 'supertest';
@@ -27,14 +27,14 @@ describe('validation', function () {
 
 describe('log in process', () => {
   let agent: TestAgent;
-  let sessionData: SessionData;
+  let exposedUser: ExposedUser;
 
   beforeAll(async () => {
-    [agent, sessionData] = await authenticatedAgent(alice);
+    [agent, exposedUser] = await authenticatedAgent(alice);
   });
 
   test('log in success', (done) => {
-    expect(sessionData).toHaveProperty('displayName', alice.displayName);
+    expect(exposedUser).toHaveProperty('displayName', alice.displayName);
     done();
   });
 
@@ -42,7 +42,7 @@ describe('log in process', () => {
     agent
       .get('/sessions')
       .expect('Content-Type', /json/)
-      .expect(sessionData)
+      .expect(exposedUser)
       .expect(200, done);
   });
 
