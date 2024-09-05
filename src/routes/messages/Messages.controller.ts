@@ -1,18 +1,62 @@
 import { prisma } from '../../prisma/prisma';
+import { parseQueryToIntegerArray } from '../../utility/parseQueryToIntegerArray';
 import { MessageValidator } from './Messages.validator';
+import type { Prisma } from '@prisma/client';
 import type { Request, Response } from 'express';
 import expressAsyncHandler from 'express-async-handler';
 
 const TO_SERVER_ID = -1;
 
 const get = expressAsyncHandler(async (req: Request, res: Response) => {
-  const fromUserId = parseInt(req.query.fromUserId as string) || undefined;
+  const fromIds = parseQueryToIntegerArray(
+    req.query.fromUserId as string | string[] | undefined,
+  );
 
-  let toUserId: number | null | undefined =
-    parseInt(req.query.toUserId as string) || undefined;
+  const toIds = parseQueryToIntegerArray(
+    req.query.toUserId as string | string[] | undefined,
+  );
 
-  if (toUserId === TO_SERVER_ID) {
-    toUserId = null;
+  const authFilter: Prisma.MessageWhereInput = {
+    OR: [
+      {
+        fromUserId: req.user!.id,
+      },
+      {
+        toUserId: req.user!.id,
+      },
+      {
+        toUserId: null,
+      },
+    ],
+  };
+
+  const searchFilter: Prisma.MessageWhereInput = {};
+
+  if (fromIds.length > 0) {
+    searchFilter.fromUserId = {
+      in: fromIds,
+    };
+  }
+
+  if (toIds.length > 0) {
+    const includeToServer =
+      toIds.findIndex((value) => value === TO_SERVER_ID) >= 0;
+    if (includeToServer) {
+      searchFilter.OR = [
+        {
+          toUserId: {
+            in: toIds,
+          },
+        },
+        {
+          toUserId: null,
+        },
+      ];
+    } else {
+      searchFilter.toUserId = {
+        in: toIds,
+      };
+    }
   }
 
   const result = await prisma.message.findMany({
@@ -31,25 +75,7 @@ const get = expressAsyncHandler(async (req: Request, res: Response) => {
       },
     },
     where: {
-      fromUserId,
-      toUserId,
-      OR: [
-        {
-          OR: [
-            {
-              fromUserId: req.user!.id,
-            },
-            {
-              toUserId: req.user!.id,
-            },
-          ],
-        },
-        {
-          toUserId: {
-            equals: null,
-          },
-        },
-      ],
+      AND: [authFilter, searchFilter],
     },
   });
 

@@ -6,8 +6,8 @@ const MessagesRouter = Router();
 
 MessagesRouter.use(authRoute);
 
-// q: fromUserId? (number)
-// q: toUserId? (number, -1 means to server)
+// q: fromUserId? (supports multiple)
+// q: toUserId? (supports multiple, -1 means to server)
 MessagesRouter.get('/', MessagesController.get);
 
 MessagesRouter.post('/', MessagesController.create);
