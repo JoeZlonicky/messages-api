@@ -13,7 +13,7 @@ const redisStore = () => {
   const redisClient = createClient();
   redisClient.connect().catch(console.error);
 
-  new RedisStore({
+  return new RedisStore({
     client: redisClient,
     prefix: process.env.REDIS_PREFIX
       ? process.env.REDIS_PREFIX + ':'
