@@ -1,14 +1,20 @@
 import { prisma } from '../../prisma/prisma';
-import type { Message, Prisma } from '@prisma/client';
+import type { Message } from '@prisma/client';
 
-async function useTestMessages(
-  messageData: Prisma.MessageCreateInput[],
-): Promise<Message[]> {
+type MessageData = {
+  content: string;
+  fromUserId: number;
+  toUserId: number | null;
+};
+
+async function useTestMessages(messageData: MessageData[]): Promise<Message[]> {
   const messages = Promise.all(
     messageData.map(async (data) => {
       const existing = await prisma.message.findFirst({
         where: {
           content: data.content,
+          fromUserId: data.fromUserId,
+          toUserId: data.toUserId,
         },
       });
       if (existing) {
