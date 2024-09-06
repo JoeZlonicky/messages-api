@@ -5,6 +5,7 @@ declare global {
       NODE_ENV: string; // Set to 'true' when running jest
 
       DATABASE_URI: string;
+      REDIS_URI: string;
       REDIS_PREFIX: string;
 
       AUTH_SECRET: string;

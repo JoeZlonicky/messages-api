@@ -10,7 +10,9 @@ const redisStore = () => {
     return undefined;
   }
 
-  const redisClient = createClient();
+  const redisClient = createClient({
+    url: process.env.REDIS_URI,
+  });
   redisClient.connect().catch(console.error);
 
   return new RedisStore({
