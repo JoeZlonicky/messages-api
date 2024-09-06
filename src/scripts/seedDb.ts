@@ -1,6 +1,6 @@
-import { hashPassword } from '../auth/hashPassword';
 import { alice, bob, caitlin, messageContents } from '../data/seedData.js';
 import { prisma } from '../prisma/prisma';
+import { hashPassword } from '../utility/auth/hashPassword';
 import type { Prisma, User } from '@prisma/client';
 
 async function upsertUser(userConfig: Prisma.UserCreateInput) {

@@ -1,5 +1,5 @@
-import { hashPassword } from '../../auth/hashPassword';
 import { prisma } from '../../prisma/prisma';
+import { hashPassword } from '../auth/hashPassword';
 import type { Prisma, User } from '@prisma/client';
 
 async function useTestUsers(

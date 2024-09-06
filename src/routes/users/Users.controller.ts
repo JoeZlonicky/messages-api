@@ -1,6 +1,6 @@
-import { hashPassword } from '../../auth/hashPassword';
 import { prisma } from '../../prisma/prisma';
 import type { ExposedUser } from '../../types/ExposedUser';
+import { hashPassword } from '../../utility/auth/hashPassword';
 import { UsersValidator } from './Users.validator';
 import type { NextFunction, Request, Response } from 'express';
 import expressAsyncHandler from 'express-async-handler';

@@ -1,11 +1,11 @@
-import { authRoute } from '../../middleware/authRoute';
+import { protectedRoute } from '../../middleware/protectedRoute';
 import { validateRequest } from '../../middleware/validateRequest';
 import { prisma } from '../../prisma/prisma';
 import type { User } from '@prisma/client';
 import bcrypt from 'bcryptjs';
 import { body } from 'express-validator';
 
-const get = [authRoute];
+const get = [protectedRoute];
 
 const create = [
   body('username')
@@ -35,6 +35,6 @@ const create = [
   validateRequest,
 ];
 
-const remove = [authRoute];
+const remove = [protectedRoute];
 
 export const SessionsValidator = { get, create, remove };

@@ -1,12 +1,12 @@
-import { authRoute } from '../../middleware/authRoute';
+import { protectedRoute } from '../../middleware/protectedRoute';
 import { validateRequest } from '../../middleware/validateRequest';
 import { prisma } from '../../prisma/prisma';
 import type { Request } from 'express';
 import { body, param } from 'express-validator';
 
-const get = [authRoute];
+const get = [protectedRoute];
 
-const getById = [authRoute];
+const getById = [protectedRoute];
 
 const create = [
   body('username')
@@ -57,7 +57,7 @@ const create = [
 ];
 
 const update = [
-  authRoute,
+  protectedRoute,
   param('id')
     .custom((value, { req }) => {
       return parseInt(value as string) === (req as Request).user!.id;
