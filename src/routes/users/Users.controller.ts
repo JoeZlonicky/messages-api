@@ -1,6 +1,5 @@
-import { prisma } from '../../prisma/prisma';
-import type { ExposedUser } from '../../types/ExposedUser';
 import { hashPassword } from '../../utility/auth/hashPassword';
+import { UsersModel } from './Users.model';
 import { UsersValidator } from './Users.validator';
 import type { NextFunction, Request, Response } from 'express';
 import expressAsyncHandler from 'express-async-handler';
@@ -8,12 +7,7 @@ import expressAsyncHandler from 'express-async-handler';
 const getAll = [
   ...UsersValidator.get,
   expressAsyncHandler(async (_req: Request, res: Response) => {
-    const result = await prisma.user.findMany({
-      select: {
-        id: true,
-        displayName: true,
-      },
-    });
+    const result = await UsersModel.getAll();
     res.json(result);
   }),
 ];
@@ -23,13 +17,8 @@ const getById = [
   expressAsyncHandler(
     async (req: Request, res: Response, next: NextFunction) => {
       const id = parseInt(req.params.id!);
-      const result: ExposedUser[] = await prisma.user.findMany({
-        select: {
-          id: true,
-          displayName: true,
-        },
-        where: { id },
-      });
+      const result = await UsersModel.getById(id);
+
       if (!result) {
         return next();
       }
@@ -49,17 +38,11 @@ const create = [
 
     const hashedPassword = await hashPassword(password);
 
-    const result: ExposedUser = await prisma.user.create({
-      data: {
-        username,
-        displayName,
-        password: hashedPassword,
-      },
-      select: {
-        id: true,
-        displayName: true,
-      },
-    });
+    const result = await UsersModel.create(
+      username,
+      displayName,
+      hashedPassword,
+    );
 
     res.json(result);
   }),
@@ -69,23 +52,10 @@ const update = [
   ...UsersValidator.update,
   expressAsyncHandler(async (req: Request, res: Response) => {
     const { displayName } = req.body as {
-      displayName?: string;
+      displayName: string;
     };
 
-    if (!displayName) return;
-
-    const result: ExposedUser = await prisma.user.update({
-      select: {
-        id: true,
-        displayName: true,
-      },
-      data: {
-        displayName,
-      },
-      where: {
-        id: req.user!.id,
-      },
-    });
+    const result = await UsersModel.update(req.user!.id, displayName);
 
     res.json(result);
   }),

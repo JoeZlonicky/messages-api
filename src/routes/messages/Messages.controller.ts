@@ -1,13 +1,10 @@
-import { prisma } from '../../prisma/prisma';
 import { parseQueryToIntegerArray } from '../../utility/parseQueryToIntegerArray';
+import { MessagesModel } from './Messages.model';
 import { MessageValidator } from './Messages.validator';
-import type { Prisma } from '@prisma/client';
 import type { Request, Response } from 'express';
 import expressAsyncHandler from 'express-async-handler';
 
-const TO_SERVER_ID = -1;
-
-const get = expressAsyncHandler(async (req: Request, res: Response) => {
+const getAll = expressAsyncHandler(async (req: Request, res: Response) => {
   const fromIds = parseQueryToIntegerArray(
     req.query.fromUserId as string | string[] | undefined,
   );
@@ -16,68 +13,7 @@ const get = expressAsyncHandler(async (req: Request, res: Response) => {
     req.query.toUserId as string | string[] | undefined,
   );
 
-  const authFilter: Prisma.MessageWhereInput = {
-    OR: [
-      {
-        fromUserId: req.user!.id,
-      },
-      {
-        toUserId: req.user!.id,
-      },
-      {
-        toUserId: null,
-      },
-    ],
-  };
-
-  const searchFilter: Prisma.MessageWhereInput = {};
-
-  if (fromIds.length > 0) {
-    searchFilter.fromUserId = {
-      in: fromIds,
-    };
-  }
-
-  if (toIds.length > 0) {
-    const includeToServer =
-      toIds.findIndex((value) => value === TO_SERVER_ID) >= 0;
-    if (includeToServer) {
-      searchFilter.OR = [
-        {
-          toUserId: {
-            in: toIds,
-          },
-        },
-        {
-          toUserId: null,
-        },
-      ];
-    } else {
-      searchFilter.toUserId = {
-        in: toIds,
-      };
-    }
-  }
-
-  const result = await prisma.message.findMany({
-    include: {
-      fromUser: {
-        select: {
-          id: true,
-          username: true,
-        },
-      },
-      toUser: {
-        select: {
-          id: true,
-          username: true,
-        },
-      },
-    },
-    where: {
-      AND: [authFilter, searchFilter],
-    },
-  });
+  const result = await MessagesModel.getAll(req.user!.id, fromIds, toIds);
 
   res.json(result);
 });
@@ -95,30 +31,14 @@ const create = [
       toUserIdParsed = null;
     }
 
-    const result = await prisma.message.create({
-      data: {
-        fromUserId: req.user!.id,
-        toUserId: toUserIdParsed,
-        content,
-      },
-      include: {
-        fromUser: {
-          select: {
-            id: true,
-            username: true,
-          },
-        },
-        toUser: {
-          select: {
-            id: true,
-            username: true,
-          },
-        },
-      },
-    });
+    const result = await MessagesModel.create(
+      req.user!.id,
+      toUserIdParsed,
+      content,
+    );
 
     res.json(result);
   }),
 ];
 
-export const MessagesController = { get, create };
+export const MessagesController = { getAll, create };
