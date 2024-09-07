@@ -1,5 +1,4 @@
 import { app } from '../../app';
-import { alice } from '../../data/seedData';
 import { useTestSession } from '../../utility/testing/useTestSession';
 import { beforeAll, describe, expect, test } from '@jest/globals';
 import type { User } from '@prisma/client';
@@ -30,11 +29,11 @@ describe('log in process', () => {
   let user: User;
 
   beforeAll(async () => {
-    [agent, user] = await useTestSession(alice);
+    [agent, user] = await useTestSession(0);
   });
 
   test('log in success', (done) => {
-    expect(user).toHaveProperty('displayName', alice.displayName);
+    expect(user).toHaveProperty('displayName', user.displayName);
     done();
   });
 
@@ -43,7 +42,7 @@ describe('log in process', () => {
       .get('/sessions')
       .expect('Content-Type', /json/)
       .expect((res) => {
-        expect(res.body).toHaveProperty('displayName', alice.displayName);
+        expect(res.body).toHaveProperty('displayName', user.displayName);
       })
       .expect(200, done);
   });

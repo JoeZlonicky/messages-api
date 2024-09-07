@@ -1,26 +1,21 @@
 import { app } from '../../app';
-import { useTestUsers } from './useTestUsers';
-import type { Prisma, User } from '@prisma/client';
+import { useTestUser } from './useTestUser';
+import type { User } from '@prisma/client';
 import request from 'supertest';
 import type TestAgent from 'supertest/lib/agent';
 
 async function useTestSession(
-  userData: Prisma.UserCreateInput,
+  userIndex: 0 | 1 | 2,
 ): Promise<[TestAgent, User]> {
   const agent = request.agent(app);
-  const users = await useTestUsers([userData]);
-  const user = users[0];
-
-  if (!user) {
-    throw new Error();
-  }
+  const [user, userData] = await useTestUser(userIndex);
 
   const result = await agent
     .post('/sessions')
-    .send(`username=${user.username}&password=${userData.password}`);
+    .send(`username=${userData.username}&password=${userData.password}`);
 
   if (!result) {
-    throw new Error();
+    throw new Error('Failed to create test session');
   }
 
   return [agent, user];

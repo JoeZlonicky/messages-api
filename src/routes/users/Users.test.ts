@@ -1,5 +1,4 @@
 import { app } from '../../app';
-import { alice } from '../../data/seedData';
 import { prisma } from '../../prisma/prisma';
 import type { ExposedUser } from '../../types/ExposedUser';
 import { useTestSession } from '../../utility/testing/useTestSession';
@@ -53,7 +52,7 @@ describe('authenticated requests', () => {
   let exposedUser: ExposedUser;
 
   beforeAll(async () => {
-    [agent, exposedUser] = await useTestSession(alice);
+    [agent, exposedUser] = await useTestSession(0);
   });
 
   test('get users', (done) => {

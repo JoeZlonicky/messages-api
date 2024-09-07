@@ -6,4 +6,5 @@ const defaultEsmPreset = createDefaultEsmPreset();
 /** @type {import('ts-jest').JestConfigWithTsJest} */
 export default {
   ...defaultEsmPreset,
+  globalTeardown: './src/scripts/testTeardown.ts',
 };

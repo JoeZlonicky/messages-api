@@ -1,71 +1,58 @@
-import { alice, bob, caitlin, messageContents } from '../data/seedData.js';
 import { prisma } from '../prisma/prisma';
 import { hashPassword } from '../utility/auth/hashPassword';
-import type { Prisma, User } from '@prisma/client';
+import type { User } from '@prisma/client';
 
-async function upsertUser(userConfig: Prisma.UserCreateInput) {
+async function upsertUser(
+  username: string,
+  password: string,
+  displayName: string,
+) {
   return await prisma.user.upsert({
-    where: { username: userConfig.username },
+    where: { username },
     update: {},
     create: {
-      username: userConfig.username,
-      password: await hashPassword(userConfig.password),
-      displayName: userConfig.displayName,
+      username,
+      password: await hashPassword(password),
+      displayName,
     },
   });
 }
 
-async function createMessageIfDoesntExist(
-  content: string,
-  from: User,
-  to: User | null,
-) {
-  const aliceToServerMessage = await prisma.message.findFirst({
+// Doesn't "truly" upsert because content is not unique
+async function upsertMessage(content: string, from: User, to: User | null) {
+  const message = await prisma.message.findFirst({
     where: {
       content: content,
       fromUser: from,
       toUser: null,
     },
   });
-  if (!aliceToServerMessage) {
-    await prisma.message.create({
-      data: {
-        content: content,
-        fromUserId: from.id,
-        toUserId: to ? to.id : undefined,
-      },
-    });
+
+  if (message) {
+    return;
   }
+
+  await prisma.message.create({
+    data: {
+      content: content,
+      fromUserId: from.id,
+      toUserId: to ? to.id : undefined,
+    },
+  });
 }
 
 async function seed() {
   console.log('Seeding database...');
 
-  const aliceUser = await upsertUser(alice);
-  const bobUser = await upsertUser(bob);
-  const caitlinUser = await upsertUser(caitlin);
+  const aliceUser = await upsertUser('alice123', '12345678', 'Alice');
+  const bobUser = await upsertUser('bob123', '12345678', 'Bob');
+  const caitlinUser = await upsertUser('caitlin123', '12345678', 'Caitlin');
 
-  await createMessageIfDoesntExist(
-    messageContents.aliceToServer,
-    aliceUser,
-    null,
-  );
-  await createMessageIfDoesntExist(messageContents.bobToServer, bobUser, null);
-  await createMessageIfDoesntExist(
-    messageContents.aliceToCaitlin,
-    aliceUser,
-    caitlinUser,
-  );
-  await createMessageIfDoesntExist(
-    messageContents.caitlinToAlice,
-    caitlinUser,
-    aliceUser,
-  );
-  await createMessageIfDoesntExist(
-    messageContents.caitlinToBob,
-    caitlinUser,
-    bobUser,
-  );
+  await upsertMessage('Hi, server!', aliceUser, null);
+  await upsertMessage('Glad to be here!', bobUser, null);
+  await upsertMessage('Hi, Caitlin', aliceUser, caitlinUser);
+  await upsertMessage('Hey!', caitlinUser, aliceUser);
+  await upsertMessage('Hi, Bob!', caitlinUser, bobUser);
 
   console.log('Done!');
 }
