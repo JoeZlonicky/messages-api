@@ -8,15 +8,21 @@ import type { Message, User } from '@prisma/client';
 import request from 'supertest';
 import type TestAgent from 'supertest/lib/agent';
 
-test('401 without authentication', (done) => {
+test('401 get without authentication', (done) => {
   request(app).get('/messages').expect(401, done);
 });
 
-describe('authenticated requests', function () {
+test('401 post without authentication', (done) => {
+  request(app).post('/messages').expect(401, done);
+});
+
+describe('get messages', () => {
   let agent: TestAgent;
+
   let alice: User;
   let bob: User;
   let caitlin: User;
+
   let serverMessages: Message[];
   let visiblePrivateMessages: Message[];
 
@@ -113,5 +119,62 @@ describe('authenticated requests', function () {
         expect(res.body).toHaveLength(visiblePrivateMessages.length);
       })
       .expect(200, done);
+  });
+});
+
+describe('create message', () => {
+  let agent: TestAgent;
+  let sender: User;
+  let receiver: User;
+
+  function createValidMessage() {
+    return {
+      toUserId: receiver.id,
+      content: 'Hi!',
+    };
+  }
+
+  function sendMessage(message: { toUserId: number; content: string }) {
+    return agent
+      .post('/messages')
+      .send(`toUserId=${message.toUserId}&content=${message.content}`);
+  }
+
+  beforeAll(async () => {
+    [agent, sender] = await useTestSession(0);
+    [receiver] = await useTestUser(1);
+  });
+
+  test('empty post fails', (done) => {
+    agent.post(`/messages`).expect(400, done);
+  });
+
+  test('success', (done) => {
+    const message = createValidMessage();
+    sendMessage(message)
+      .expect((res) => {
+        expect(res.body).toHaveProperty('fromUserId', sender.id);
+        expect(res.body).toHaveProperty('toUserId', receiver.id);
+        expect(res.body).toHaveProperty('content', message.content);
+      })
+      .expect(200, done);
+  });
+
+  test('missing content fails', (done) => {
+    const message = createValidMessage();
+    message.content = '';
+    sendMessage(message).expect(400, done);
+  });
+
+  test('invalid toUserId fails', (done) => {
+    const message = createValidMessage();
+    message.toUserId = 999;
+    sendMessage(message).expect(400, done);
+  });
+
+  test('invalid toUserId fails', (done) => {
+    const message = createValidMessage();
+    message.toUserId = 999;
+    sendMessage(message).expect(400, done);
   });
 });
