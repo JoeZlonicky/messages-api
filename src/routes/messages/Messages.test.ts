@@ -1,6 +1,6 @@
 import { app } from '../../app';
 import { prisma } from '../../prisma/prisma';
-import { useTestMessage } from '../../utility/testing/useTestMessages';
+import { useTestMessage } from '../../utility/testing/useTestMessage';
 import { useTestSession } from '../../utility/testing/useTestSession';
 import { useTestUser } from '../../utility/testing/useTestUser';
 import { beforeAll, describe, expect, test } from '@jest/globals';
