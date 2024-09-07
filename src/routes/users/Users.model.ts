@@ -1,5 +1,4 @@
 import { prisma } from '../../prisma/prisma';
-import type { ExposedUser } from '../../types/ExposedUser';
 
 async function getAll() {
   const result = await prisma.user.findMany({
@@ -13,7 +12,7 @@ async function getAll() {
 }
 
 async function getById(id: number) {
-  const result: ExposedUser[] = await prisma.user.findMany({
+  const result = await prisma.user.findMany({
     select: {
       id: true,
       displayName: true,

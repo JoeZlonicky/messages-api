@@ -1,5 +1,4 @@
 import { app } from '../../app';
-import type { ExposedUser } from '../../types/ExposedUser';
 import { useTestSession } from '../../utility/testing/useTestSession';
 import { useTestUser } from '../../utility/testing/useTestUser';
 import { beforeAll, describe, expect, test } from '@jest/globals';
@@ -23,10 +22,10 @@ describe('authentication', () => {
 
 describe('get requests', () => {
   let agent: TestAgent;
-  let exposedUser: ExposedUser;
+  let user: User;
 
   beforeAll(async () => {
-    [agent, exposedUser] = await useTestSession(0);
+    [agent, user] = await useTestSession(0);
   });
 
   test('get users', (done) => {
@@ -34,7 +33,7 @@ describe('get requests', () => {
   });
 
   test('get user by id', (done) => {
-    agent.get(`/users/${exposedUser.id}`).expect(200, done);
+    agent.get(`/users/${user.id}`).expect(200, done);
   });
 });
 
