@@ -44,13 +44,13 @@ async function getAll(userId: number, fromIds: number[], toIds: number[]) {
       fromUser: {
         select: {
           id: true,
-          username: true,
+          displayName: true,
         },
       },
       toUser: {
         select: {
           id: true,
-          username: true,
+          displayName: true,
         },
       },
     },
@@ -77,13 +77,13 @@ async function create(
       fromUser: {
         select: {
           id: true,
-          username: true,
+          displayName: true,
         },
       },
       toUser: {
         select: {
           id: true,
-          username: true,
+          displayName: true,
         },
       },
     },
