@@ -31,8 +31,8 @@ const authSession = session({
   secret: process.env.AUTH_SECRET,
   cookie: {
     maxAge: /* 30 days = */ 30 * 24 * 60 * 60 * 1000,
-    secure: process.env.AUTH_SECURE === 'true' || undefined,
-    httpOnly: process.env.AUTH_SECURE === 'true' || undefined,
+    httpOnly: true,
+    sameSite: 'strict',
   },
 });
 
