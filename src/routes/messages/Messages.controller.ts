@@ -1,6 +1,6 @@
 import { parseQueryToIntegerArray } from '../../utility/parseQueryToIntegerArray';
 import { MessagesModel } from './Messages.model';
-import { MessageValidator } from './Messages.validator';
+import { MessagesValidator } from './Messages.validator';
 import type { Request, Response } from 'express';
 import expressAsyncHandler from 'express-async-handler';
 
@@ -19,7 +19,7 @@ const getAll = expressAsyncHandler(async (req: Request, res: Response) => {
 });
 
 const create = [
-  ...MessageValidator.create,
+  ...MessagesValidator.create,
   expressAsyncHandler(async (req: Request, res: Response) => {
     const { toUserId, content } = req.body as {
       toUserId: string;

@@ -31,4 +31,4 @@ const create = [
   validateRequest,
 ];
 
-export const MessageValidator = { create };
+export const MessagesValidator = { create };
