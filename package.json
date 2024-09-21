@@ -9,7 +9,7 @@
   },
   "scripts": {
     "start": "dotenvx run -f .env.local -- tsx src/server.ts",
-    "watch": "dotenvx run -f .env.local -- tsx --watch src/server.ts",
+    "dev": "dotenvx run -f .env.local -- tsx --watch src/server.ts",
     "migrate-db": "dotenvx run -f .env.local -- prisma migrate dev",
     "deploy-db": "dotenvx run -f .env.local -- prisma migrate deploy",
     "seed-db": "dotenvx run -f .env.local -- tsx src/scripts/seedDb.ts",
