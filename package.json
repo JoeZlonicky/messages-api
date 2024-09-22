@@ -30,7 +30,8 @@
     "express-async-handler": "^1.2.0",
     "express-session": "^1.18.0",
     "express-validator": "^7.2.0",
-    "redis": "^4.7.0"
+    "redis": "^4.7.0",
+    "socket.io": "^4.8.0"
   },
   "devDependencies": {
     "@dotenvx/dotenvx": "^1.13.2",
