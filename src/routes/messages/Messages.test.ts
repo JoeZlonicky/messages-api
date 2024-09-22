@@ -120,6 +120,15 @@ describe('get messages', () => {
       })
       .expect(200, done);
   });
+
+  test('get messages after id', (done) => {
+    agent
+      .get(`/messages?afterId=${serverMessages.at(1)?.id}`)
+      .expect((res) => {
+        expect(res.body).toHaveLength(visiblePrivateMessages.length);
+      })
+      .expect(200, done);
+  });
 });
 
 describe('create message', () => {

@@ -5,15 +5,24 @@ import type { Request, Response } from 'express';
 import expressAsyncHandler from 'express-async-handler';
 
 const getAll = expressAsyncHandler(async (req: Request, res: Response) => {
-  const fromIds = parseQueryToIntegerArray(
+  const fromUserIds = parseQueryToIntegerArray(
     req.query.fromUserId as string | string[] | undefined,
   );
 
-  const toIds = parseQueryToIntegerArray(
+  const toUserIds = parseQueryToIntegerArray(
     req.query.toUserId as string | string[] | undefined,
   );
 
-  const result = await MessagesModel.getAll(req.user!.id, fromIds, toIds);
+  const afterId = parseQueryToIntegerArray(
+    req.query.afterId as string | string[] | undefined,
+  ).at(0);
+
+  const result = await MessagesModel.getAll(
+    req.user!.id,
+    fromUserIds,
+    toUserIds,
+    afterId,
+  );
 
   res.json(result);
 });

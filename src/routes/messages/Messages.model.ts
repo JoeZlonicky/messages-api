@@ -3,7 +3,12 @@ import type { Prisma } from '@prisma/client';
 
 const TO_SERVER_ID = -1;
 
-async function getAll(userId: number, fromIds: number[], toIds: number[]) {
+async function getAll(
+  userId: number,
+  fromUserIds: number[],
+  toUserIds: number[],
+  afterId: number | undefined = undefined,
+) {
   const authFilter: Prisma.MessageWhereInput = {
     OR: [
       {
@@ -20,15 +25,15 @@ async function getAll(userId: number, fromIds: number[], toIds: number[]) {
 
   const searchFilter: Prisma.MessageWhereInput = {};
   searchFilter.fromUserId = {
-    in: fromIds.length > 0 ? fromIds : undefined,
+    in: fromUserIds.length > 0 ? fromUserIds : undefined,
   };
 
-  if (toIds.length > 0) {
-    const hasExplicitToServer = toIds.includes(TO_SERVER_ID);
+  if (toUserIds.length > 0) {
+    const hasExplicitToServer = toUserIds.includes(TO_SERVER_ID);
     searchFilter.OR = [
       {
         toUserId: {
-          in: toIds.length > 0 ? toIds : undefined,
+          in: toUserIds.length > 0 ? toUserIds : undefined,
         },
       },
       {
@@ -38,6 +43,12 @@ async function getAll(userId: number, fromIds: number[], toIds: number[]) {
       },
     ];
   }
+
+  const minIdFilter: Prisma.MessageWhereInput = {
+    id: {
+      gt: afterId,
+    },
+  };
 
   const result = await prisma.message.findMany({
     include: {
@@ -55,7 +66,7 @@ async function getAll(userId: number, fromIds: number[], toIds: number[]) {
       },
     },
     where: {
-      AND: [authFilter, searchFilter],
+      AND: [authFilter, searchFilter, minIdFilter],
     },
   });
 

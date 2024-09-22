@@ -8,6 +8,7 @@ MessagesRouter.use(protectedRoute);
 
 // q: fromUserId? (supports multiple)
 // q: toUserId? (supports multiple, -1 means to server)
+// q: afterId?
 MessagesRouter.get('/', MessagesController.getAll);
 
 MessagesRouter.post('/', MessagesController.create);
