@@ -68,6 +68,9 @@ async function getAll(
     where: {
       AND: [authFilter, searchFilter, minIdFilter],
     },
+    orderBy: {
+      id: 'asc',
+    },
   });
 
   return result;
