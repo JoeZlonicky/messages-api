@@ -19,9 +19,6 @@ function socket(httpServer: HttpServer) {
     allowEIO3: true,
   });
 
-  io.engine.on('connection_error', (error) => {
-    console.error(error);
-  });
   io.engine.use(authSession);
   io.engine.use(protectedRoute);
 

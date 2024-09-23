@@ -19,6 +19,20 @@ async function startPolling(io: Server) {
 
   while (true) {
     const newMessages = await prisma.message.findMany({
+      include: {
+        fromUser: {
+          select: {
+            id: true,
+            displayName: true,
+          },
+        },
+        toUser: {
+          select: {
+            id: true,
+            displayName: true,
+          },
+        },
+      },
       where: {
         id: {
           gt: lastId,
