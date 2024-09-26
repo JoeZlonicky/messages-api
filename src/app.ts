@@ -1,6 +1,6 @@
+import { pageNotFound } from './errors/pageNotFound';
+import { serverError } from './errors/serverError';
 import { authSession } from './middleware/authSession';
-import { pageNotFound } from './middleware/pageNotFound';
-import { serverError } from './middleware/serverError';
 import { IndexRouter } from './routes/Index.router';
 import cors from 'cors';
 import express from 'express';
