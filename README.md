@@ -1,6 +1,6 @@
 # Messages API
 
-A REST API for a messaging application. Built using TypeScript, Express, and Prisma. Also uses Redis for session storage and Jest for testing.
+A REST API for a messaging application. Built using TypeScript, Express, and Prisma. Uses Socket.IO for real-time message updates, Redis for session storage, and Jest w/ SuperTest for testing.
 
 ## Requirements
 
