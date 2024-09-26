@@ -5,7 +5,7 @@ import type { NextFunction, Request, Response } from 'express';
 import expressAsyncHandler from 'express-async-handler';
 
 const getAll = [
-  ...UsersValidator.get,
+  ...UsersValidator.getAll,
   expressAsyncHandler(async (_req: Request, res: Response) => {
     const result = await UsersModel.getAll();
     res.json(result);

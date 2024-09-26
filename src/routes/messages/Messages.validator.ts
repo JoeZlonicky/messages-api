@@ -1,6 +1,30 @@
 import { validateRequest } from '../../middleware/validateRequest';
 import { prisma } from '../../prisma/prisma';
-import { body } from 'express-validator';
+import { body, query } from 'express-validator';
+
+const parseIntsQuery = (name: string) =>
+  query(name)
+    .optional()
+    .customSanitizer((value: string | string[]) =>
+      Array.isArray(value)
+        ? value.map((id) => parseInt(id))
+        : [parseInt(value)],
+    )
+    .custom((value: number[]) => {
+      return value.every((id: number) => !isNaN(id));
+    })
+    .withMessage(`${name} not an integer`);
+
+const getAll = [
+  parseIntsQuery('fromUserId'),
+  parseIntsQuery('toUserId'),
+  query('afterId')
+    .optional()
+    .isInt()
+    .toInt()
+    .withMessage('afterId not an integer'),
+  validateRequest,
+];
 
 const create = [
   body('toUserId')
@@ -31,4 +55,4 @@ const create = [
   validateRequest,
 ];
 
-export const MessagesValidator = { create };
+export const MessagesValidator = { getAll, create };

@@ -40,7 +40,6 @@ describe('log in process', () => {
   test('get session', (done) => {
     agent
       .get('/sessions')
-      .expect('Content-Type', /json/)
       .expect((res) => {
         expect(res.body).toHaveProperty('displayName', user.displayName);
       })

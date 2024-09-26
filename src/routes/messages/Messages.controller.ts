@@ -1,31 +1,33 @@
-import { parseQueryToIntegerArray } from '../../utility/parseQueryToIntegerArray';
 import { MessagesModel } from './Messages.model';
 import { MessagesValidator } from './Messages.validator';
 import type { Request, Response } from 'express';
 import expressAsyncHandler from 'express-async-handler';
 
-const getAll = expressAsyncHandler(async (req: Request, res: Response) => {
-  const fromUserIds = parseQueryToIntegerArray(
-    req.query.fromUserId as string | string[] | undefined,
-  );
+interface GetAllQueryParams {
+  fromUserId?: number[];
+  toUserId?: number[];
+  afterId?: number;
+}
 
-  const toUserIds = parseQueryToIntegerArray(
-    req.query.toUserId as string | string[] | undefined,
-  );
+type GetAllRequest = Request<unknown, unknown, unknown, GetAllQueryParams>;
 
-  const afterId = parseQueryToIntegerArray(
-    req.query.afterId as string | string[] | undefined,
-  ).at(0);
+const getAll = [
+  ...MessagesValidator.getAll,
+  expressAsyncHandler(async (req: GetAllRequest, res: Response) => {
+    const fromUserIds = req.query.fromUserId || [];
+    const toUserIds = req.query.toUserId || [];
+    const afterId = req.query.afterId;
 
-  const result = await MessagesModel.getAll(
-    req.user!.id,
-    fromUserIds,
-    toUserIds,
-    afterId,
-  );
+    const result = await MessagesModel.getAll(
+      req.user!.id,
+      fromUserIds,
+      toUserIds,
+      afterId,
+    );
 
-  res.json(result);
-});
+    res.json(result);
+  }),
+];
 
 const create = [
   ...MessagesValidator.create,

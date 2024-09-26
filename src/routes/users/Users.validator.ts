@@ -4,7 +4,7 @@ import { prisma } from '../../prisma/prisma';
 import type { Request } from 'express';
 import { body, param } from 'express-validator';
 
-const get = [protectedRoute];
+const getAll = [protectedRoute];
 
 const getById = [protectedRoute];
 
@@ -71,4 +71,4 @@ const update = [
   validateRequest,
 ];
 
-export const UsersValidator = { get, getById, create, update };
+export const UsersValidator = { getAll, getById, create, update };
