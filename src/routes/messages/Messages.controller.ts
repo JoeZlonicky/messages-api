@@ -3,11 +3,11 @@ import { MessagesValidator } from './Messages.validator';
 import type { Request, Response } from 'express';
 import expressAsyncHandler from 'express-async-handler';
 
-interface GetAllQueryParams {
+type GetAllQueryParams = {
   fromUserId?: number[];
   toUserId?: number[];
   afterId?: number;
-}
+};
 
 type GetAllRequest = Request<unknown, unknown, unknown, GetAllQueryParams>;
 
