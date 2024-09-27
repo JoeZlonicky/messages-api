@@ -1,48 +1,15 @@
-import { prisma } from '../prisma/prisma';
+import { getNewMessages } from './getNewMessages';
+import { getStartingId } from './getStartingId';
 import { notify } from './notify';
 import { Server } from 'socket.io';
 
 const POLLING_TIME_MS = 1000.0;
 
-function delay(ms: number) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
 async function startPolling(io: Server) {
-  let lastId = 0;
-  const latestMessage = await prisma.message.findFirst({
-    orderBy: { id: 'desc' },
-  });
-  if (latestMessage) {
-    lastId = latestMessage.id;
-  }
+  let lastId = await getStartingId();
 
-  while (true) {
-    const newMessages = await prisma.message.findMany({
-      include: {
-        fromUser: {
-          select: {
-            id: true,
-            displayName: true,
-          },
-        },
-        toUser: {
-          select: {
-            id: true,
-            displayName: true,
-          },
-        },
-      },
-      where: {
-        id: {
-          gt: lastId,
-        },
-      },
-      orderBy: {
-        id: 'asc',
-      },
-    });
-
+  const poll = async () => {
+    const newMessages = await getNewMessages(lastId);
     if (newMessages.length > 0) {
       lastId = newMessages.at(-1)?.id as number;
     }
@@ -51,8 +18,12 @@ async function startPolling(io: Server) {
       notify(io, message);
     });
 
-    await delay(POLLING_TIME_MS);
-  }
+    setTimeout(() => {
+      poll().catch((err) => console.error(err));
+    }, POLLING_TIME_MS);
+  };
+
+  poll().catch((err) => console.error(err));
 }
 
 export { startPolling };
