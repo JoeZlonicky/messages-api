@@ -47,6 +47,7 @@ describe('sign up', () => {
   };
 
   let usernameSuffix = 0;
+  const agent: TestAgent = request.agent(app);
 
   function createValidSignUp(): signUpData {
     return {
@@ -59,7 +60,7 @@ describe('sign up', () => {
   }
 
   function sendSignUp(signUp: signUpData) {
-    return request(app)
+    return agent
       .post('/users')
       .send(
         `username=${signUp.username}&password=${signUp.password}&confirmPassword=${signUp.confirmPassword}&displayName=${signUp.displayName}&signUpSecret=${signUp.secret}`,
@@ -79,6 +80,10 @@ describe('sign up', () => {
         expect(res.body).toHaveProperty('displayName', signUp.displayName);
       })
       .expect(200, done);
+  });
+
+  test('authenticated after signUp', (done) => {
+    agent.get('/sessions').expect(200, done);
   });
 
   // --- Username tests ---

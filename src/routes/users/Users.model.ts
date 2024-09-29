@@ -30,10 +30,6 @@ async function create(username: string, displayName: string, password: string) {
       displayName,
       password,
     },
-    select: {
-      id: true,
-      displayName: true,
-    },
   });
 
   return result;
