@@ -15,7 +15,7 @@ Check out the corresponding [front-end made in React](https://github.com/JoeZlon
 1. Install packages with `pnpm install`
 2. Create a `.env.local` file that follows `.env.example`.
 3. Set up database with `pnpm run migrate-db`.
-4. Run with `pnpm run start` or `pnpm run watch`.
+4. Run with `pnpm run start` or `pnpm run dev`.
 
 ## Testing
 
