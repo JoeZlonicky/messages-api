@@ -2,6 +2,8 @@
 
 A REST API for a messaging application. Built using TypeScript, Express, and Prisma. Uses Socket.IO for real-time message updates, Redis for session storage, and Jest w/ SuperTest for testing.
 
+Check out the corresponding [front-end made in React](https://github.com/JoeZlonicky/messages-site).
+
 ## Requirements
 
 1. pnpm or similar.
